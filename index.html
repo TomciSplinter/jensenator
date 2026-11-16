@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JENSENATOR — Half human. All compute.</title>
+<meta name="description" content="Jensenator: a fan-made tribute to the man in the leather jacket and the chips that power the AI era.">
+<meta property="og:title" content="JENSENATOR — Half human. All compute.">
+<meta property="og:description" content="He came back from the future with one mission: put a GPU in everything.">
+<meta property="og:image" content="og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fonts/alfa-slab-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face{font-family:"Alfa Slab One";src:url(fonts/alfa-slab-one-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Share Tech Mono";src:url(fonts/share-tech-mono-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:Inter;src:url(fonts/inter-latin-300-normal.woff2) format("woff2");font-weight:300;font-display:swap}
+  @font-face{font-family:Inter;src:url(fonts/inter-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:Inter;src:url(fonts/inter-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+  @font-face{font-family:Inter;src:url(fonts/inter-latin-600-normal.woff2) format("woff2");font-weight:600;font-display:swap}
+  :root{--bg:#000000;--fg:#f2f5f1;--dim:#8a938c;--g:#76ff3a;--g2:#4fd61c;--line:rgba(118,255,58,.18)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html,body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .mono{font-family:"Share Tech Mono",ui-monospace,monospace}
+  .slab{font-family:"Alfa Slab One",Georgia,serif;font-weight:400;letter-spacing:.01em}
+  .glow{color:#fff;-webkit-text-stroke:2px #0a0a0a;text-shadow:4px 5px 0 var(--g2),0 0 28px rgba(118,255,58,.45)}
+
+  nav{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:16px 4vw;background:linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,0));}
+  nav .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  nav .brand img{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--g);box-shadow:0 0 14px rgba(118,255,58,.5);object-fit:cover}
+  nav .brand span{font-size:22px;-webkit-text-stroke:1px #0a0a0a;text-shadow:2px 3px 0 var(--g2)}
+  nav .links{display:flex;gap:28px;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+  nav .links a{text-decoration:none;opacity:.8;transition:opacity .2s,color .2s}
+  nav .links a:hover{opacity:1;color:var(--g)}
+
+  #scrolly{position:relative;height:600vh}
+  .stage{position:sticky;top:0;height:100vh;width:100%;overflow:hidden}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .vignette{position:absolute;inset:0;pointer-events:none;background:
+    linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,0) 20%,rgba(0,0,0,0) 52%,rgba(0,0,0,.92) 100%),
+    radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.5) 100%)}
+  .scan{position:absolute;inset:0;pointer-events:none;opacity:.07;background:repeating-linear-gradient(to bottom,#000 0 2px,transparent 2px 4px)}
+  .beat{position:absolute;left:4vw;right:4vw;bottom:10vh;opacity:0;transform:translateY(24px);pointer-events:none;will-change:opacity,transform}
+  .beat.right{text-align:right}
+  .beat.center{text-align:center}
+  .tag{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--g);margin-bottom:14px;text-shadow:0 0 10px rgba(0,0,0,.8)}
+  .tag::before{content:"> ";opacity:.7}
+  .beat h1,.beat h2{line-height:.95}
+  .beat h1{font-size:clamp(56px,10vw,170px)}
+  .beat h2{font-size:clamp(44px,7.4vw,124px)}
+  .beat p{max-width:440px;margin-top:18px;color:#d6ddd7;font-size:clamp(15px,1.2vw,18px);line-height:1.55;font-weight:300;text-shadow:0 2px 20px rgba(0,0,0,.8)}
+  .beat.right p{margin-left:auto}
+  .beat.center p{margin:18px auto 0}
+  .hud{position:absolute;top:84px;left:4vw;font-size:12px;color:var(--g);line-height:1.7;opacity:.85;text-shadow:0 0 8px rgba(118,255,58,.6)}
+  .hud b{font-weight:400;color:#fff}
+  .progress{position:absolute;right:4vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:5}
+  .progress span{width:2px;height:34px;background:rgba(255,255,255,.18);position:relative;overflow:hidden}
+  .progress span i{position:absolute;inset:0;background:var(--g);box-shadow:0 0 8px var(--g);transform:scaleY(0);transform-origin:top}
+  .hint{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:10px}
+  .hint::after{content:"";width:1px;height:38px;background:linear-gradient(var(--g),transparent);animation:drop 1.8s ease-in-out infinite}
+  @keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+  .loader{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:22px;transition:opacity .8s ease}
+  .loader img{width:min(320px,62vw)}
+  .loader .bar{width:200px;height:2px;background:rgba(255,255,255,.12);overflow:hidden}
+  .loader .bar i{display:block;height:100%;width:0;background:var(--g);box-shadow:0 0 10px var(--g)}
+  .loader small{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--g)}
+
+  section.block{position:relative;z-index:2;background:var(--bg);padding:14vh 4vw}
+  .eyebrow{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--g);margin-bottom:20px}
+  .eyebrow::before{content:"// ";opacity:.6}
+  h3.big{font-size:clamp(40px,6vw,96px);line-height:1}
+  .lead{color:#b9c1bb;font-size:clamp(16px,1.3vw,19px);line-height:1.7;font-weight:300;max-width:560px}
+
+  .intro{display:grid;grid-template-columns:1.05fr 1fr;gap:6vw;align-items:center}
+  .intro img{width:100%;max-width:620px;justify-self:center}
+  .intro .lead{margin-top:28px}
+  .stats{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+  .stats div{border-left:2px solid var(--g);padding-left:14px}
+  .stats b{display:block;font-size:30px;color:#fff;font-weight:400}
+  .stats span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:8vh}
+  .card{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(118,255,58,.05),rgba(118,255,58,0) 60%);padding:30px 28px 34px;transition:border-color .3s,transform .3s}
+  .card:hover{border-color:rgba(118,255,58,.6);transform:translateY(-4px)}
+  .card::before,.card::after{content:"";position:absolute;width:14px;height:14px;border-color:var(--g);border-style:solid}
+  .card::before{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .card::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+  .card .k{font-size:12px;color:var(--g);letter-spacing:.18em}
+  .card h4{font-size:30px;margin:18px 0 12px;font-weight:400}
+  .card p{color:#a9b2ab;font-size:15px;line-height:1.65;font-weight:300}
+
+  .log{margin-top:8vh;border-top:1px solid var(--line)}
+  .row{display:grid;grid-template-columns:140px 1fr 1.4fr;gap:4vw;padding:30px 0;border-bottom:1px solid var(--line);align-items:baseline;opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+  .row.in{opacity:1;transform:none}
+  .row .y{font-size:34px;color:var(--g);text-shadow:0 0 14px rgba(118,255,58,.4)}
+  .row h5{font-size:24px;font-weight:400}
+  .row p{color:#a9b2ab;font-size:15px;line-height:1.65;font-weight:300}
+
+  .quote{text-align:center;padding:20vh 4vw;position:relative;z-index:2;background:radial-gradient(ellipse at center,rgba(118,255,58,.10),rgba(0,0,0,0) 60%),var(--bg)}
+  .quote blockquote{font-size:clamp(40px,7vw,120px);line-height:1.02}
+  .quote cite{display:block;margin-top:28px;font-style:normal;color:var(--dim);font-size:13px;letter-spacing:.24em;text-transform:uppercase}
+
+  .cta{text-align:center}
+  .cta h3{font-size:clamp(46px,8vw,140px);line-height:.98}
+  .btns{display:flex;justify-content:center;gap:16px;margin-top:44px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:12px;padding:18px 34px;border:1.5px solid var(--g);border-radius:2px;text-decoration:none;font-size:14px;letter-spacing:.2em;text-transform:uppercase;transition:all .25s;background:transparent}
+  .btn.solid{background:var(--g);color:#030403;font-weight:600}
+  .btn:hover{box-shadow:0 0 28px rgba(118,255,58,.55)}
+  .btn.ghost:hover{background:rgba(118,255,58,.1)}
+
+  footer{position:relative;z-index:2;background:var(--bg);padding:6vh 4vw 5vh;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;font-size:12px;color:var(--dim);line-height:1.7}
+  footer .disc{max-width:640px}
+
+  @media (max-width:860px){
+    nav .links{display:none}
+    .intro,.grid{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr;gap:8px}
+    .progress,.hud{display:none}
+    .beat{bottom:9vh}
+    .stats{gap:24px}
+    .glow{-webkit-text-stroke:1.5px #0a0a0a;text-shadow:3px 4px 0 var(--g2),0 0 22px rgba(118,255,58,.4)}
+  }
+  @media (prefers-reduced-motion:reduce){.hint::after{animation:none}.row{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="loader" id="loader"><img src="logo-800.jpg" alt="Jensenator logo"><div class="bar"><i id="lbar"></i></div><small class="mono">Booting neural net…</small></div>
+
+<nav>
+  <a class="brand" href="#top"><img src="apple-touch-icon.png" alt=""><span class="slab" style="color:#fff">JENSENATOR</span></a>
+  <div class="links"><a href="#mission">Mission</a><a href="#arsenal">Arsenal</a><a href="#log">Mission log</a><a href="#join">Join</a></div>
+</nav>
+
+<div id="scrolly">
+  <div class="stage" id="top">
+    <canvas id="c"></canvas>
+    <div class="vignette"></div>
+    <div class="scan"></div>
+    <div class="hud mono">TARGET ACQUISITION<br>STATUS: <b id="st">SCANNING</b><br>INTEGRITY: <b id="pc">000</b>%</div>
+
+    <div class="beat" data-in="0" data-out="0.16">
+      <div class="tag mono">Subject 01: Human</div>
+      <h1 class="slab glow">Feel<br>everything.</h1>
+      <p>Instinct, taste, the stuff no dataset can teach. Every revolution starts with a human question.</p>
+    </div>
+    <div class="beat center" data-in="0.36" data-out="0.62">
+      <div class="tag mono">Merge in progress</div>
+      <h2 class="slab glow">Two sides.<br>One future.</h2>
+      <p>Back to back, never apart. Where human ambition meets machine scale.</p>
+    </div>
+    <div class="beat right" data-in="0.8" data-out="1.01">
+      <div class="tag mono">Subject 02: Jensenator</div>
+      <h1 class="slab glow">All<br>compute.</h1>
+      <p>Half human, all GPU. He came back from the future with one mission: put accelerated computing in everything.</p>
+    </div>
+
+    <div class="progress"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="hint mono" id="hint">Scroll to boot</div>
+  </div>
+</div>
+
+<section class="block" id="mission">
+  <div class="intro">
+    <div>
+      <div class="eyebrow mono">The mission</div>
+      <h3 class="big slab glow">He'll be back.<br>With more GPUs.</h3>
+      <p class="lead">The leather jacket never comes off. The keynotes never end. The chips keep getting bigger. Jensenator is a fan-made tribute to the man who turned a graphics card company into the engine of the AI era, reimagined as the machine he helped build.</p>
+      <div class="stats">
+        <div><b class="mono">1993</b><span>Year one</span></div>
+        <div><b class="mono">CUDA</b><span>Native language</span></div>
+        <div><b class="mono">∞</b><span>Leather jackets</span></div>
+      </div>
+    </div>
+    <img src="logo-800.jpg" alt="Jensenator: half man, half machine, in a leather jacket with glowing green sunglasses">
+  </div>
+</section>
+
+<section class="block" id="arsenal" style="padding-top:4vh">
+  <div class="eyebrow mono">The arsenal</div>
+  <h3 class="big slab glow">Built different.</h3>
+  <div class="grid">
+    <div class="card"><div class="k mono">MODULE 01 / GPU</div><h4 class="slab">Parallel brain</h4><p>Thousands of cores working at once. What began as a way to draw game pixels became the best tool on earth for the maths behind AI.</p></div>
+    <div class="card"><div class="k mono">MODULE 02 / CUDA</div><h4 class="slab">The secret language</h4><p>CUDA let developers program GPUs for anything, not just graphics. Nearly two decades of software built on top is the moat nobody can cross.</p></div>
+    <div class="card"><div class="k mono">MODULE 03 / NVLINK</div><h4 class="slab">Hive mind</h4><p>Chips wired together so thousands of GPUs act like one giant one. Data centers become a single AI factory.</p></div>
+  </div>
+</section>
+
+<section class="block" id="log" style="padding-top:4vh">
+  <div class="eyebrow mono">Mission log</div>
+  <h3 class="big slab glow">Judgment day timeline.</h3>
+  <div class="log">
+    <div class="row"><div class="y mono">1993</div><h5 class="slab">The origin</h5><p>Three engineers plan a graphics chip company over breakfast at a Denny's. Jensen becomes CEO and never leaves.</p></div>
+    <div class="row"><div class="y mono">1999</div><h5 class="slab">The first GPU</h5><p>GeForce 256 launches and NVIDIA coins the term "GPU". Gamers rejoice.</p></div>
+    <div class="row"><div class="y mono">2006</div><h5 class="slab">CUDA awakens</h5><p>GPUs become general-purpose processors. Scientists, then AI researchers, start paying attention.</p></div>
+    <div class="row"><div class="y mono">2012</div><h5 class="slab">The spark</h5><p>AlexNet, trained on two gaming GPUs, smashes the ImageNet challenge. Deep learning goes mainstream.</p></div>
+    <div class="row"><div class="y mono">2022+</div><h5 class="slab">The takeover</h5><p>Hopper, then Blackwell. Large language models run on NVIDIA data-center GPUs, and the world can't get enough of them.</p></div>
+  </div>
+</section>
+
+<section class="quote">
+  <blockquote class="slab glow">"The more you buy,<br>the more you save."</blockquote>
+  <cite class="mono">Jensen Huang, GTC 2018</cite>
+</section>
+
+<section class="block cta" id="join">
+  <div class="eyebrow mono">Join the resistance (or don't)</div>
+  <h3 class="slab glow">Come with me<br>if you want<br>to compute.</h3>
+  <div class="btns">
+    <a class="btn solid mono" href="#top">Run it back</a>
+    <a class="btn ghost mono" href="https://www.nvidia.com" target="_blank" rel="noopener">Visit the real NVIDIA</a>
+  </div>
+</section>
+
+<footer>
+  <div class="slab" style="font-size:20px;color:#fff">JENSENATOR</div>
+  <div class="disc">Jensenator is an unofficial fan-made parody project. It is not affiliated with, endorsed by or sponsored by NVIDIA Corporation or Jensen Huang. NVIDIA, GeForce, CUDA and NVLink are trademarks of NVIDIA Corporation.</div>
+</footer>
+
+<script>
+(function(){
+  const FRAMES = 241;
+  const pad = n => String(n).padStart(4,'0');
+  const dir = window.innerWidth < 900 ? 'frames_sm/' : 'frames/';
+  const imgs = new Array(FRAMES);
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const scrolly = document.getElementById('scrolly');
+  const beats = [...document.querySelectorAll('.beat')];
+  const bars = [...document.querySelectorAll('.progress i')];
+  const hint = document.getElementById('hint');
+  const st = document.getElementById('st'), pc = document.getElementById('pc');
+  let current = -1, smooth = 0;
+
+  function resize(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(innerWidth * dpr);
+    canvas.height = Math.round(innerHeight * dpr);
+    current = -1;
+  }
+  const KEYS=[[0,.46],[.3,.5],[.5,.68],[.7,.6],[1,.42]];
+  function focal(p){ for(let k=1;k<KEYS.length;k++){const [a,fa]=KEYS[k-1],[b,fb]=KEYS[k]; if(p<=b){const t=(p-a)/(b-a); const e=t*t*(3-2*t); return fa+(fb-fa)*e;}} return .5; }
+  function ready(im){return im && im.complete && im.naturalWidth}
+  function draw(i){
+    let img = imgs[i];
+    if(!ready(img)){
+      img=null;
+      for(let d=1; d<FRAMES; d++){
+        if(ready(imgs[i-d])){img=imgs[i-d];break}
+        if(ready(imgs[i+d])){img=imgs[i+d];break}
+      }
+      if(!img) return false;
+    }
+    const cw=canvas.width, ch=canvas.height, iw=img.naturalWidth, ih=img.naturalHeight;
+    const s=Math.max(cw/iw, ch/ih), w=iw*s, h=ih*s;
+    let x = cw/2 - w*focal(i/(FRAMES-1)); x = Math.min(0, Math.max(cw-w, x));
+    ctx.drawImage(img,x,(ch-h)/2,w,h);
+    return img===imgs[i];
+  }
+  function progress(){
+    const r = scrolly.getBoundingClientRect();
+    const total = r.height - innerHeight;
+    return Math.min(1, Math.max(0, -r.top / total));
+  }
+  function updateText(p){
+    beats.forEach(b=>{
+      const a=+b.dataset.in, z=+b.dataset.out, fade=0.06;
+      let o=0;
+      if(p>=a && p<=z){ o=Math.min(1,(p-a)/fade,(z-p)/fade); if(a===0) o=Math.min(1,(z-p)/fade); if(z>1) o=Math.min(1,(p-a)/fade); }
+      b.style.opacity = o.toFixed(3);
+      b.style.transform = `translateY(${(1-o)*24}px)`;
+    });
+    const seg=[[0,.33],[.33,.66],[.66,1]];
+    bars.forEach((el,k)=>{const [a,z]=seg[k];el.style.transform=`scaleY(${Math.min(1,Math.max(0,(p-a)/(z-a)))})`});
+    hint.style.opacity = Math.max(0, 1 - p*12);
+    pc.textContent = String(Math.round(p*100)).padStart(3,'0');
+    st.textContent = p<.3 ? 'HUMAN DETECTED' : p<.7 ? 'MERGING' : 'JENSENATOR ONLINE';
+  }
+  function tick(){
+    const target = progress();
+    smooth += (target - smooth) * 0.14;
+    if(Math.abs(target-smooth) < 0.0005) smooth = target;
+    const f = Math.min(FRAMES-1, Math.round(smooth*(FRAMES-1)));
+    if(f!==current){ if(draw(f)) current=f; }
+    updateText(smooth);
+    requestAnimationFrame(tick);
+  }
+  function load(){
+    const order=[];
+    for(let i=0;i<FRAMES;i+=8) order.push(i);
+    for(let i=0;i<FRAMES;i++) if(i%8) order.push(i);
+    const firstN = Math.ceil(FRAMES/8);
+    let firstDone=0;
+    order.forEach((i,k)=>{
+      const img=new Image();
+      img.decoding='async';
+      img.onload=img.onerror=()=>{
+        current=-1;
+        if(k<firstN){ firstDone++; document.getElementById('lbar').style.width=(firstDone/firstN*100)+'%';
+          if(firstDone===firstN){ const L=document.getElementById('loader'); L.style.opacity=0; setTimeout(()=>L.remove(),800); } }
+      };
+      img.src=dir+'f_'+pad(i+1)+'.jpg';
+      imgs[i]=img;
+    });
+  }
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.2}) : null;
+  document.querySelectorAll('.row').forEach(r=> io ? io.observe(r) : r.classList.add('in'));
+
+  addEventListener('resize', resize);
+  resize(); load(); requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
