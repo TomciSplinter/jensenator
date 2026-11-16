@@ -115,6 +115,23 @@
   footer{position:relative;z-index:2;background:var(--bg);padding:6vh 4vw 5vh;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;font-size:12px;color:var(--dim);line-height:1.7}
   footer .disc{max-width:640px}
 
+
+  .dossier{display:grid;grid-template-columns:.9fr 1.1fr;gap:5vw;align-items:center}
+  .photo{position:relative;border:1px solid rgba(255,70,70,.35);max-width:520px;justify-self:center;width:100%}
+  .photo img{display:block;width:100%;filter:contrast(1.05) saturate(.9)}
+  .photo::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 2px,transparent 2px 4px);pointer-events:none}
+  .photo .lock{position:absolute;left:46%;top:30%;width:28%;aspect-ratio:1;border:2px solid #ff4646;box-shadow:0 0 18px rgba(255,70,70,.6);z-index:2}
+  .photo .lock::before{content:"TARGET LOCK";position:absolute;top:-22px;left:0;font:12px "Share Tech Mono",monospace;color:#ff4646;letter-spacing:.15em;white-space:nowrap}
+  .stamp{position:absolute;right:-14px;bottom:28px;z-index:3;transform:rotate(-8deg);font:22px "Alfa Slab One",serif;color:#ff4646;border:3px solid #ff4646;padding:6px 14px;letter-spacing:.08em;background:rgba(0,0,0,.4)}
+  .file{border:1px solid rgba(255,70,70,.3);padding:34px 32px;background:linear-gradient(180deg,rgba(255,70,70,.06),rgba(0,0,0,0) 60%)}
+  .file .eyebrow{color:#ff4646}
+  .fields{margin-top:28px;display:grid;grid-template-columns:170px 1fr;gap:14px 20px;font-size:15px}
+  .fields dt{font-family:"Share Tech Mono",monospace;color:#ff6b6b;letter-spacing:.14em;text-transform:uppercase;font-size:13px;padding-top:2px}
+  .fields dd{color:#d4dad5;font-weight:300;line-height:1.55}
+  .redact{background:#e8e8e8;color:transparent;user-select:none;border-radius:1px}
+  .file .note{margin-top:28px;padding-top:22px;border-top:1px dashed rgba(255,70,70,.3);color:#a9b2ab;font-size:15px;line-height:1.7;font-weight:300}
+  .file .note b{color:#fff;font-weight:500}
+  @media (max-width:860px){.dossier{grid-template-columns:1fr}.fields{grid-template-columns:1fr;gap:4px}.fields dd{margin-bottom:12px}.stamp{right:8px}}
   @media (max-width:860px){
     nav .links{display:none}
     .intro,.grid{grid-template-columns:1fr}
@@ -132,7 +149,7 @@
 
 <nav>
   <a class="brand" href="#top"><img src="apple-touch-icon.png" alt=""><span class="slab" style="color:#fff">JENSENATOR</span></a>
-  <div class="links"><a href="#mission">Mission</a><a href="#arsenal">Arsenal</a><a href="#log">Mission log</a><a href="#join">Join</a></div>
+  <div class="links"><a href="#mission">Mission</a><a href="#spy">Spy girl</a><a href="#arsenal">Arsenal</a><a href="#log">Mission log</a><a href="#join">Join</a></div>
 </nav>
 
 <div id="scrolly">
@@ -143,14 +160,14 @@
     <div class="hud mono">TARGET ACQUISITION<br>STATUS: <b id="st">SCANNING</b><br>INTEGRITY: <b id="pc">000</b>%</div>
 
     <div class="beat" data-in="0" data-out="0.16">
-      <div class="tag mono">Subject 01: Human</div>
-      <h1 class="slab glow">Feel<br>everything.</h1>
-      <p>Instinct, taste, the stuff no dataset can teach. Every revolution starts with a human question.</p>
+      <div class="tag mono">Subject 01: Spy girl</div>
+      <h1 class="slab glow">Trust<br>no one.</h1>
+      <p>She walked into the atrium like she owned it. She didn't. She came for the chips.</p>
     </div>
     <div class="beat center" data-in="0.36" data-out="0.62">
       <div class="tag mono">Merge in progress</div>
       <h2 class="slab glow">Two sides.<br>One future.</h2>
-      <p>Back to back, never apart. Where human ambition meets machine scale.</p>
+      <p>Back to back. Each one thinks the other doesn't know.</p>
     </div>
     <div class="beat right" data-in="0.8" data-out="1.01">
       <div class="tag mono">Subject 02: Jensenator</div>
@@ -176,6 +193,31 @@
       </div>
     </div>
     <img src="logo-800.jpg" alt="Jensenator: half man, half machine, in a leather jacket with glowing green sunglasses">
+  </div>
+</section>
+
+
+<section class="block" id="spy" style="padding-top:4vh">
+  <div class="dossier">
+    <div class="photo">
+      <img src="agent.jpg" alt="The spy girl in a red floral top, photographed in a glass atrium">
+      <div class="lock"></div>
+      <div class="stamp">CLASSIFIED</div>
+    </div>
+    <div class="file">
+      <div class="eyebrow mono">Intercepted file // Eyes only</div>
+      <h3 class="big slab glow" style="text-shadow:4px 5px 0 #c42c2c,0 0 28px rgba(255,70,70,.35)">Spy girl.</h3>
+      <dl class="fields">
+        <dt>Name</dt><dd>Unknown. Nobody has ever gotten it.</dd>
+        <dt>Status</dt><dd>Active. Somewhere in the building.</dd>
+        <dt>Target</dt><dd>The Jensenator</dd>
+        <dt>Objective</dt><dd>Steal the blueprints for the next-generation chip <span class="redact">before the keynote</span></dd>
+        <dt>Cover</dt><dd>Just here for the conference. Definitely not taking notes.</dd>
+        <dt>Weapons</dt><dd>A red dress, perfect hair in any wind, and a USB stick <span class="redact">hidden in the earring</span></dd>
+        <dt>Threat level</dt><dd>Extreme. Has already beaten facial recognition twice.</dd>
+      </dl>
+      <p class="note"><b>Field note:</b> She stood back to back with him for ten full seconds. He didn't flinch. She didn't blink. The HUD logged it as "friendly." The HUD was wrong. Or was it?</p>
+    </div>
   </div>
 </section>
 
@@ -277,7 +319,7 @@
     bars.forEach((el,k)=>{const [a,z]=seg[k];el.style.transform=`scaleY(${Math.min(1,Math.max(0,(p-a)/(z-a)))})`});
     hint.style.opacity = Math.max(0, 1 - p*12);
     pc.textContent = String(Math.round(p*100)).padStart(3,'0');
-    st.textContent = p<.3 ? 'HUMAN DETECTED' : p<.7 ? 'MERGING' : 'JENSENATOR ONLINE';
+    st.textContent = p<.3 ? 'SPY DETECTED' : p<.7 ? 'MERGING' : 'JENSENATOR ONLINE';
   }
   function tick(){
     const target = progress();
